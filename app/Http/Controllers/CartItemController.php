@@ -9,70 +9,72 @@ use App\Http\Resources\CartItemResource;
 class CartItemController extends Controller
 {
     /**
-     * Display a listing of the cart items.
+     * Display all cart items.
      */
     public function index()
     {
-        $cartItems = CartItem::with('product')->get();
+        $cartItems = CartItem::all(); // no eager load (MySQL + Mongo conflict)
         return CartItemResource::collection($cartItems);
     }
 
     /**
-     * Store a newly created cart item.
+     * Store a new cart item.
      */
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'cart_id'    => 'required|exists:carts,id',
-            'product_id' => 'required|exists:products,id',
+            'cart_id'    => 'required|exists:carts,_id',  // Mongo cart
+            'product_id' => 'required|exists:products,id', // MySQL product
             'quantity'   => 'required|integer|min:1',
         ]);
 
-        // Check if the item already exists in the cart
+        // If already exists, increment quantity
         $existingItem = CartItem::where('cart_id', $validated['cart_id'])
             ->where('product_id', $validated['product_id'])
             ->first();
 
         if ($existingItem) {
-            // If it exists, update the quantity
             $existingItem->quantity += $validated['quantity'];
             $existingItem->save();
 
-            return new CartItemResource($existingItem->load('product'));
+            return new CartItemResource($existingItem);
         }
 
         $cartItem = CartItem::create($validated);
-        return new CartItemResource($cartItem->load('product'));
+        return new CartItemResource($cartItem);
     }
 
     /**
-     * Display the specified cart item.
+     * Show a specific cart item by MongoDB _id.
      */
-    public function show(CartItem $cartItem)
+    public function show(string $id)
     {
-        return new CartItemResource($cartItem->load('product'));
+        $cartItem = CartItem::findOrFail($id);
+        return new CartItemResource($cartItem);
     }
 
     /**
-     * Update the specified cart item.
+     * Update a cart item by MongoDB _id.
      */
-    public function update(Request $request, CartItem $cartItem)
+    public function update(Request $request, string $id)
     {
         $validated = $request->validate([
             'quantity'   => 'sometimes|integer|min:1',
             'product_id' => 'sometimes|exists:products,id',
         ]);
 
+        $cartItem = CartItem::findOrFail($id);
         $cartItem->update($validated);
 
-        return new CartItemResource($cartItem->load('product'));
+        return new CartItemResource($cartItem);
     }
 
     /**
-     * Remove the specified cart item.
+     * Remove a cart item by MongoDB _id.
      */
-    public function destroy(CartItem $cartItem)
+    public function destroy(string $id)
     {
+        $cartItem = CartItem::findOrFail($id);
         $cartItem->delete();
 
         return response()->json(['message' => 'Cart item removed successfully.']);

@@ -2,35 +2,34 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use MongoDB\Laravel\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Cart extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
+    protected $connection = 'mongodb';
+    protected $collection = 'carts';
+
     protected $fillable = [
         'user_id',
+        'status',
+    ];
+
+    protected $casts = [
+        '_id' => 'string',
     ];
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        // User is still MySQL (normal Eloquent)
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
     public function cartItems()
     {
-        return $this->hasMany(CartItem::class);
-    }
-
-    public function products()
-    {
-        return $this->belongsToMany(Product::class, 'cart_items')
-                    ->withPivot('quantity');
+        // Match Mongo _id with cart_id field in cart_items
+        return $this->hasMany(CartItem::class, 'cart_id', '_id');
     }
 }

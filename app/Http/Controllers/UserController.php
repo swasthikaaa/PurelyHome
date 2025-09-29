@@ -2,96 +2,51 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use Illuminate\Http\Request;
-use App\Http\Resources\UserResource;
-use Illuminate\Validation\Rule;
+use App\Models\User;
 
 class UserController extends Controller
 {
     /**
-     * Display a listing of users.
-     * Optionally filter by role via ?role=admin or ?role=customer
+     * Show all users (Admin only).
      */
-    public function index(Request $request)
+    public function index()
     {
-        $query = User::query();
-
-        if ($request->has('role')) {
-            $role = $request->query('role');
-            if (in_array($role, ['admin', 'customer'])) {
-                $query->where('role', $role);
-            }
-        }
-
-        $users = $query->with('phones', 'cart')->get();
-
-        return UserResource::collection($users);
+        $users = User::all();
+        return view('admin.users.index', compact('users'));
     }
 
     /**
-     * Store a newly created user.
-     */
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6|confirmed', // expects password_confirmation
-            'role'     => ['required', Rule::in(['admin', 'customer'])],
-            'address'  => 'nullable|string|max:1000',
-        ]);
-
-        $user = User::create([
-            'name'     => $validated['name'],
-            'email'    => $validated['email'],
-            'password' => $validated['password'], // will be hashed by model cast
-            'role'     => $validated['role'],
-            'address'  => $validated['address'] ?? null,
-        ]);
-
-        return new UserResource($user->load('phones', 'cart'));
-    }
-
-    /**
-     * Display the specified user.
+     * Show a single user profile.
      */
     public function show(User $user)
     {
-        return new UserResource($user->load('phones', 'cart'));
+        return view('admin.users.show', compact('user'));
     }
 
     /**
-     * Update the specified user.
+     * Update a user (e.g., profile info).
      */
     public function update(Request $request, User $user)
     {
-        $validated = $request->validate([
-            'name'     => 'sometimes|required|string|max:255',
-            'email'    => ['sometimes', 'required', 'email', Rule::unique('users')->ignore($user->id)],
-            'password' => 'sometimes|nullable|string|min:6|confirmed',
-            'role'     => ['sometimes', 'required', Rule::in(['admin', 'customer'])],
-            'address'  => 'nullable|string|max:1000',
+        $request->validate([
+            'name'  => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'role'  => 'nullable|string',
+            'address' => 'nullable|string',
         ]);
 
-        // Update fields manually to handle password hashing if present
-        if (isset($validated['password'])) {
-            $user->password = $validated['password'];
-            unset($validated['password']);
-        }
+        $user->update($request->only(['name', 'email', 'role', 'address']));
 
-        $user->update($validated);
-
-        return new UserResource($user->load('phones', 'cart'));
+        return redirect()->back()->with('success', 'User updated successfully.');
     }
 
     /**
-     * Remove the specified user.
+     * Delete a user.
      */
     public function destroy(User $user)
     {
         $user->delete();
-
-        return response()->json(['message' => 'User deleted successfully.']);
+        return redirect()->back()->with('success', 'User deleted successfully.');
     }
 }

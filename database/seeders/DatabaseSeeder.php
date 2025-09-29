@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\Category;
 use App\Models\Product;
@@ -17,21 +19,41 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // Create 1 Admin User
-        $admin = User::factory()->create([
-            'role'  => 'admin',
-            'email' => 'admin@purelyhome.com', // for login/testing
+        // 🚨 First clean all tables (order matters due to foreign keys)
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        User::truncate();
+        Category::truncate();
+        Product::truncate();
+        Phone::truncate();
+        Cart::truncate();
+        CartItem::truncate();
+        Order::truncate();
+        OrderItem::truncate();
+        Payment::truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
+        // ✅ Create 1 Admin User (fixed credentials)
+        $admin = User::create([
+            'name'              => 'Admin User',
+            'email'             => 'admin@purelyhome.com',
+            'password'          => Hash::make('password123'),
+            'role'              => 'admin',
+            'email_verified_at' => now(),
         ]);
 
-        // Create 4 Customer Users
+        // ✅ Create 4 Customer Users
         $customers = User::factory(4)->create([
             'role' => 'customer',
         ]);
 
-        // Create 5 Categories
-        $categories = Category::factory(5)->create();
+        // ✅ Insert 3 Fixed Categories
+        $categories = collect([
+            Category::create(['name' => 'Cleaning Essentials']),
+            Category::create(['name' => 'Kitchenware']),
+            Category::create(['name' => 'Home Decor']),
+        ]);
 
-        // Create 10 Products linked to random categories and the admin
+        // ✅ Create 10 Products linked to random of the 3 categories and admin
         $products = Product::factory(10)->create()->each(function ($product) use ($categories, $admin) {
             $product->update([
                 'category_id' => $categories->random()->id,
@@ -39,20 +61,19 @@ class DatabaseSeeder extends Seeder
             ]);
         });
 
-        // Create one Phone for each user
+        // ✅ Create one Phone for each user
         User::all()->each(function ($user) {
             Phone::factory()->create([
                 'user_id' => $user->id,
             ]);
         });
 
-        // Create Carts and CartItems for each customer
+        // ✅ Create Carts and CartItems for each customer
         foreach ($customers as $customer) {
             $cart = Cart::factory()->create([
                 'user_id' => $customer->id,
             ]);
 
-            // Pick 1–3 unique products for cart items
             $cartProducts = $products->random(rand(1, 3));
 
             foreach ($cartProducts as $product) {
@@ -63,7 +84,7 @@ class DatabaseSeeder extends Seeder
             }
         }
 
-        // Create 1–2 Orders per customer with OrderItems and Payment
+        // ✅ Create Orders + OrderItems + Payments for each customer
         foreach ($customers as $customer) {
             $orders = Order::factory(rand(1, 2))->create([
                 'user_id' => $customer->id,

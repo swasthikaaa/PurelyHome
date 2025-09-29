@@ -2,32 +2,36 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use MongoDB\Laravel\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Payment extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
+    protected $connection = 'mongodb';
+    protected $collection = 'payments';
+
     protected $fillable = [
         'order_id',
+        'user_id',
         'amount',
         'method',
         'status',
-        'transaction_ref',
+        'transaction_id',
+        'address',
+        'zip',
+        'phone',
+        'name',
+        'email',
+        'city',
+        'state',
+        'notes',
     ];
 
-    public function order()
-    {
-        return $this->belongsTo(Order::class);
-    }
-
     protected $casts = [
-        'amount' => 'decimal:2',
+        '_id'        => 'string',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 }

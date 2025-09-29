@@ -19,6 +19,19 @@ class CategoryController extends Controller
     }
 
     /**
+     * Display the collections page (categories + their products)
+     */
+   public function collections()
+{
+    // Load categories with their products
+    $categories = Category::with(['products' => function($query) {
+        $query->with(['admin', 'category']);
+    }])->get();
+
+    return view('collections', compact('categories'));
+}
+
+    /**
      * Store a newly created category.
      */
     public function store(Request $request)

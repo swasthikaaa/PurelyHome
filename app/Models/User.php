@@ -5,10 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Jetstream\HasProfilePhoto;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, HasProfilePhoto, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -19,7 +21,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role', // 👈 if you are using roles like admin/customer
+        'role',
+        'status',
     ];
 
     /**
@@ -33,36 +36,38 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be cast.
+     * The accessors to append to the model's array form.
      *
-     * @var array<string, string>
+     * @var array<int, string>
      */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
+    protected $appends = [
+        'profile_photo_url',
     ];
 
-    /* --------------------------
-     | Eloquent Relationships
-     |---------------------------
+    /**
+     * Attribute casting.
+     *
+     * @return array<string, string>
      */
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password'          => 'hashed',
+            'status'            => 'string',
+        ];
+    }
 
-    // ✅ One user can place many orders
+    /**
+     * ✅ Relationships
+     */
+    public function phones()
+    {
+        return $this->hasMany(Phone::class);
+    }
+
     public function orders()
     {
         return $this->hasMany(Order::class);
     }
-
-    // ✅ One user can have one cart
-    public function cart()
-    {
-        return $this->hasOne(Cart::class);
-    }
-
-    // ✅ One user can have many payments (through orders)
-    public function payments()
-    {
-        return $this->hasManyThrough(Payment::class, Order::class);
-    }
-
 }
