@@ -7,11 +7,49 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Str;
 use App\Models\User;
 
 class AuthController extends Controller
 {
+    /**
+     * Register new user.
+     */
+    public function register(Request $request)
+    {
+        $request->validate([
+            'name'     => ['required', 'string', 'max:255'],
+            'email'    => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'phone'    => ['required', 'digits:10', 'unique:users'],
+            'password' => ['required', 'confirmed', 'min:8'],
+        ], [
+            'name.required'     => 'Full name is required.',
+            'email.required'    => 'Email is required.',
+            'email.email'       => 'Enter a valid email address.',
+            'email.unique'      => 'This email is already registered.',
+            'phone.required'    => 'Phone number is required.',
+            'phone.digits'      => 'Phone number must be exactly 10 digits.',
+            'phone.unique'      => 'This phone number is already registered.',
+            'password.required' => 'Password is required.',
+            'password.min'      => 'Password must be at least 8 characters.',
+            'password.confirmed'=> 'Password confirmation does not match.',
+        ]);
+
+        $user = User::create([
+            'name'     => $request->name,
+            'email'    => $request->email,
+            'phone'    => $request->phone,
+            'password' => Hash::make($request->password),
+            'status'   => 'active',
+            'role'     => 'customer',
+        ]);
+
+        event(new Registered($user));
+
+        return redirect()->route('login')->with('success', '✅ Registration successful! Please log in.');
+    }
+
     /**
      * API login (returns Sanctum token).
      */
