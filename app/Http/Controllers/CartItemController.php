@@ -13,7 +13,7 @@ class CartItemController extends Controller
      */
     public function index()
     {
-        $cartItems = CartItem::all(); // no eager load (MySQL + Mongo conflict)
+        $cartItems = CartItem::all(); 
         return CartItemResource::collection($cartItems);
     }
 

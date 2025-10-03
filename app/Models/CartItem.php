@@ -34,7 +34,6 @@ class CartItem extends Model
 
     /**
      * Accessor for Product (MySQL)
-     * We don’t use belongsTo here because it’s in a different DB connection.
      */
     public function getProductAttribute()
     {

@@ -129,11 +129,13 @@ Route::prefix('admin')
 // -------------------------
 // Public Pages
 // -------------------------
-Route::get('/products', Products::class)->name('products.public.index');
-Route::get('/collections', Collections::class)->name('collections');
-Route::view('/about', 'about')->name('about');
-Route::get('/product/{id}', ProductDetail::class)->name('product.show');
-
+Route::middleware(['auth', config('jetstream.auth_session'), 'verified'])
+    ->group(function () {
+        Route::get('/products', Products::class)->name('products.public.index');
+        Route::get('/collections', Collections::class)->name('collections');
+        Route::view('/about', 'about')->name('about');
+        Route::get('/product/{id}', ProductDetail::class)->name('product.show');
+    });
 // -------------------------
 // Fallback
 // -------------------------

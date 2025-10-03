@@ -217,7 +217,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-            // ✅ If validation passes, let the form submit normally
         });
     }
 

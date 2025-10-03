@@ -22,7 +22,7 @@ async function fetchProducts() {
     }
 }
 
-// ---------------- Render Row (No per-row buttons) ----------------
+// ---------------- Render Row  ----------------
 function renderRow(p) {
     return `
         <tr class="hover:bg-gray-50 transition">

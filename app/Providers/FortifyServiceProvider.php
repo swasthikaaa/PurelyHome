@@ -51,7 +51,7 @@ class FortifyServiceProvider extends ServiceProvider
             $email = strtolower($request->email);
             $password = $request->password;
 
-            // 👨‍💼 Hardcoded Admin Login (direct, skip OTP)
+            // Admin Login (direct, skip OTP)
             if ($email === 'admin@purelyhome.com' && $password === 'password123') {
                 $admin = User::firstOrCreate(
                     ['email' => 'admin@purelyhome.com'],
