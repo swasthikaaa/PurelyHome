@@ -66,7 +66,7 @@ class ProductController extends Controller
             'description' => 'nullable|string',
             'category_id' => 'nullable|exists:categories,id',
             'price'       => 'required|numeric|min:0',
-            'offer_price' => 'nullable|numeric|mi',
+            'offer_price' => 'nullable|numeric|min:0',
             'quantity'    => 'required|integer|min:0',
             'is_active'   => 'required|boolean',
             'image'       => 'nullable|image|max:2048'
