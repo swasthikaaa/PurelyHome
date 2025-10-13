@@ -16,7 +16,6 @@ return Application::configure(basePath: dirname(__DIR__))
         // Register route middleware here 👇
         $middleware->alias([
             'is_admin' => IsAdmin::class,
-            'is_customer' => IsCustomer::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
