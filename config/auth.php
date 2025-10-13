@@ -69,7 +69,7 @@ return [
 
         'admins' => [
             'driver' => 'eloquent',
-            'model'  => App\Models\User::class, // ⚡ if you want a separate model, change to App\Models\Admin
+            'model'  => App\Models\User::class, 
         ],
     ],
 
