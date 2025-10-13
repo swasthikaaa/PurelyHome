@@ -60,33 +60,34 @@ class ProductController extends Controller
      * Store new product
      */
     public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'name'        => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'category_id' => 'nullable|exists:categories,id',
-            'price'       => 'required|numeric|min:0',
-            'offer_price' => 'nullable|numeric|min:0',
-            'quantity'    => 'required|integer|min:0',
-            'is_active'   => 'required|boolean',
-            'image'       => 'nullable|image|max:2048'
-        ]);
+{
+    $validated = $request->validate([
+        'name'        => 'required|string|max:255',
+        'description' => 'nullable|string',
+        'category_id' => 'nullable|exists:categories,id',
+        'price'       => 'required|numeric|min:0',
+        'offer_price' => 'nullable|numeric|min:0',   // ✅ FIXED
+        'quantity'    => 'required|integer|min:0',
+        'is_active'   => 'required|boolean',
+        'image'       => 'nullable|image|max:2048'
+    ]);
 
-        $validated['slug'] = Str::slug($validated['name']);
-        $validated['admin_id'] = auth()->id();
+    $validated['slug'] = Str::slug($validated['name']);
+    $validated['admin_id'] = auth()->id();
 
-        if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('products', 'public');
-        }
-
-        $product = Product::create($validated);
-
-        return response()->json([
-            'success' => true,
-            'message' => '✅ Product created successfully',
-            'data'    => $product
-        ], 201);
+    if ($request->hasFile('image')) {
+        $validated['image'] = $request->file('image')->store('products', 'public');
     }
+
+    $product = Product::create($validated);
+
+    return response()->json([
+        'success' => true,
+        'message' => '✅ Product created successfully',
+        'data'    => $product
+    ], 201);
+}
+
 
     /**
      * Admin: Show single product
