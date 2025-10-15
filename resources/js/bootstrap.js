@@ -2,12 +2,12 @@ import axios from 'axios';
 
 window.axios = axios;
 
-// ✅ Base URL for API
+//  Base URL for API
 axios.defaults.baseURL = '/api';
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 axios.defaults.headers.common['Accept'] = 'application/json';
 
-// ✅ Attach token automatically
+// Attach token automatically
 axios.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('auth_token');
@@ -24,7 +24,7 @@ export function getAuthHeaders() {
     return token ? { Authorization: `Bearer ${token}`, Accept: 'application/json' } : {};
 }
 
-// ✅ Handle errors
+// Handle errors
 axios.interceptors.response.use(
     (response) => response,
     (error) => {
