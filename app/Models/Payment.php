@@ -34,4 +34,10 @@ class Payment extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
+
+     public function order()
+    {
+        return $this->belongsTo(Order::class, 'payment_id', '_id');
+    }
+
 }
