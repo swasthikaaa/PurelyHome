@@ -35,7 +35,7 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
-            // ✅ Required for Sanctum to handle API token auth properly
+            // Required for Sanctum to handle API token auth properly
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
@@ -56,7 +56,7 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
 
-        // ✅ Your custom middleware
+        // Your custom middleware
         'is_admin' => \App\Http\Middleware\IsAdmin::class,
         'is_customer' => \App\Http\Middleware\IsCustomer::class,
         
