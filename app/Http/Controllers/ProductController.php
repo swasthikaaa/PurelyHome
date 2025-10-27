@@ -27,7 +27,7 @@ class ProductController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => '✅ Active products fetched successfully',
+            'message' => 'Active products fetched successfully',
             'count'   => $products->count(),
             'data'    => $products
         ]);
@@ -50,7 +50,7 @@ class ProductController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => '✅ All products fetched successfully',
+            'message' => 'All products fetched successfully',
             'count'   => $products->count(),
             'data'    => $products
         ]);
@@ -66,7 +66,7 @@ class ProductController extends Controller
         'description' => 'nullable|string',
         'category_id' => 'nullable|exists:categories,id',
         'price'       => 'required|numeric|min:0',
-        'offer_price' => 'nullable|numeric|min:0',   // ✅ FIXED
+        'offer_price' => 'nullable|numeric|min:0',   
         'quantity'    => 'required|integer|min:0',
         'is_active'   => 'required|boolean',
         'image'       => 'nullable|image|max:2048'
@@ -83,7 +83,7 @@ class ProductController extends Controller
 
     return response()->json([
         'success' => true,
-        'message' => '✅ Product created successfully',
+        'message' => 'Product created successfully',
         'data'    => $product
     ], 201);
 }
@@ -106,7 +106,7 @@ class ProductController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => '✅ Product fetched successfully',
+            'message' => 'Product fetched successfully',
             'data'    => $product
         ]);
     }
@@ -119,7 +119,7 @@ class ProductController extends Controller
         $product = Product::find($id);
 
         if (!$product) {
-            return response()->json(['success' => false, 'message' => '❌ Product not found'], 404);
+            return response()->json(['success' => false, 'message' => 'Product not found'], 404);
         }
 
         $validated = $request->validate([
@@ -148,7 +148,7 @@ class ProductController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => '✅ Product updated successfully',
+            'message' => 'Product updated successfully',
             'data'    => $product
         ]);
     }
@@ -161,7 +161,7 @@ class ProductController extends Controller
         $product = Product::find($id);
 
         if (!$product) {
-            return response()->json(['success' => false, 'message' => '❌ Product not found'], 404);
+            return response()->json(['success' => false, 'message' => 'Product not found'], 404);
         }
 
         if ($product->image && Storage::disk('public')->exists($product->image)) {
@@ -172,7 +172,7 @@ class ProductController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => '🗑️ Product deleted successfully'
+            'message' => 'Product deleted successfully'
         ]);
     }
 }
