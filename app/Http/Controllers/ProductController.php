@@ -97,7 +97,7 @@ class ProductController extends Controller
         $product = Product::with(['category', 'admin'])->find($id);
 
         if (!$product) {
-            return response()->json(['success' => false, 'message' => '❌ Product not found'], 404);
+            return response()->json(['success' => false, 'message' => 'Product not found'], 404);
         }
 
         if ($product->image && !Str::startsWith($product->image, ['http://', 'https://'])) {
