@@ -21,7 +21,7 @@ return new class extends Migration
                 ->nullOnDelete();
 
             $table->string('name');
-            $table->string('slug')->unique();
+            // Removed slug column
             $table->text('description')->nullable();
             $table->unsignedInteger('quantity')->default(0);
             $table->decimal('price', 10, 2);

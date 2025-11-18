@@ -14,8 +14,6 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             if (!Schema::hasColumn('users', 'two_factor_enabled')) {
                 $table->boolean('two_factor_enabled')->default(false)->after('remember_token');
-                $table->string('login_otp')->nullable()->after('two_factor_enabled');
-                $table->timestamp('otp_expires_at')->nullable()->after('login_otp');
             }
         });
     }
