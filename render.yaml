@@ -1,9 +1,11 @@
 services:
-  - type: static_site
+  - type: web
     name: PurelyHome
+    runtime: static
     branch: main
+    plan: free
     buildCommand: npm install && npm run build
-    publishPath: dist
-    env:
+    staticPublishPath: dist
+    envVars:
       - key: NODE_ENV
         value: production
