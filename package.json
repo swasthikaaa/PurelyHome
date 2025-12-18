@@ -5,7 +5,8 @@
     "scripts": {
         "build": "vite build",
         "dev": "vite",
-        "test": "npx playwright test"
+        "test": "npx playwright test",
+        "vercel-build": "npm install && npm run build"
     },
     "devDependencies": {
         "@playwright/test": "^1.56.1",
