@@ -11,6 +11,9 @@ foreach ($_SERVER as $key => $value) {
     }
 }
 
+// Force HTTPS for Vercel
+$_SERVER['HTTPS'] = 'on';
+
 // Temporary debug check for APP_KEY (only if APP_DEBUG is true)
 if (getenv('APP_DEBUG') === 'true' && !getenv('APP_KEY')) {
     // This will help us confirm if the environment variable is actually missing from the runtime

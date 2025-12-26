@@ -17,6 +17,10 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        if (config('app.env') === 'production' || env('VERCEL')) {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
+
         // Generate a unique value on every PHP process boot (restarts when you re-run `php artisan serve`)
         config()->set('app.boot_uuid', (string) Str::uuid());
 
