@@ -1,9 +1,9 @@
 <?php
 
 // Ensure all Vercel environment variables are available via putenv for Laravel's env() helper
-foreach ($_ENV as $key => $value) {
-    if (is_string($value)) {
-        putenv("{$key}={$value}");
+foreach (array_merge($_getenv = getenv(), $_ENV, $_SERVER) as $key => $value) {
+    if (is_string($value) && !putenv("{$key}={$value}")) {
+        // Log or handle failure if necessary
     }
 }
 
