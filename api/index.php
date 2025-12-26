@@ -1,10 +1,20 @@
 <?php
 
 // Ensure all Vercel environment variables are available via putenv for Laravel's env() helper
-foreach (array_merge($_getenv = getenv(), $_ENV, $_SERVER) as $key => $value) {
-    if (is_string($value) && !putenv("{$key}={$value}")) {
-        // Log or handle failure if necessary
+foreach ($_ENV as $key => $value) {
+    if (is_string($value))
+        putenv("{$key}={$value}");
+}
+foreach ($_SERVER as $key => $value) {
+    if (is_string($value) && strpos($key, 'HTTP_') !== 0) {
+        putenv("{$key}={$value}");
     }
+}
+
+// Temporary debug check for APP_KEY (only if APP_DEBUG is true)
+if (getenv('APP_DEBUG') === 'true' && !getenv('APP_KEY')) {
+    // This will help us confirm if the environment variable is actually missing from the runtime
+    error_log('Vercel Debug: APP_KEY is missing from getenv()');
 }
 
 // Ensure a writable directory for Laravel's cache/storage
