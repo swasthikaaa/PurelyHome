@@ -5,6 +5,7 @@
             "runtime": "vercel-php@0.7.4"
         }
     },
+    "outputDirectory": "public",
     "routes": [
         {
             "src": "/build/(.*)",
@@ -22,7 +23,6 @@
     "env": {
         "APP_ENV": "production",
         "APP_DEBUG": "true",
-        "VIEW_COMPILED_PATH": "/tmp",
         "CACHE_STORE": "array",
         "SESSION_DRIVER": "cookie",
         "LOG_CHANNEL": "stderr"
