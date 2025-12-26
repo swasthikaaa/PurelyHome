@@ -28,8 +28,9 @@
         }
     ],
     "env": {
+        "APP_NAME": "PurelyHome",
         "APP_ENV": "production",
-        "APP_DEBUG": "true",
+        "APP_DEBUG": "false",
         "CACHE_STORE": "array",
         "SESSION_DRIVER": "cookie",
         "LOG_CHANNEL": "stderr"

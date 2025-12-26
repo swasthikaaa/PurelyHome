@@ -1,5 +1,12 @@
 <?php
 
+// Ensure all Vercel environment variables are available via putenv for Laravel's env() helper
+foreach ($_ENV as $key => $value) {
+    if (is_string($value)) {
+        putenv("{$key}={$value}");
+    }
+}
+
 // Ensure a writable directory for Laravel's cache/storage
 $tmpDir = '/tmp/laravel-cache';
 $subDirs = ['/config', '/routes', '/services', '/packages', '/views', '/sessions', '/cache'];
