@@ -5,22 +5,18 @@
             "runtime": "vercel-php@0.7.4"
         }
     },
-    "outputDirectory": "public",
     "routes": [
         {
             "src": "/build/(.*)",
-            "headers": {
-                "cache-control": "public, max-age=31536000, immutable"
-            },
-            "dest": "/build/$1"
+            "dest": "/public/build/$1"
         },
         {
             "src": "/favicon.ico",
-            "dest": "/favicon.ico"
+            "dest": "/public/favicon.ico"
         },
         {
-            "src": "/(assets|images)/(.*)",
-            "dest": "/$1/$2"
+            "src": "/images/(.*)",
+            "dest": "/public/images/$1"
         },
         {
             "src": "/(.*)",
