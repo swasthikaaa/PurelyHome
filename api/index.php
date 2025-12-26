@@ -1,24 +1,23 @@
 <?php
 
-// Ensure all Vercel environment variables are available via putenv for Laravel's env() helper
-foreach ($_ENV as $key => $value) {
-    if (is_string($value))
-        putenv("{$key}={$value}");
-}
-foreach ($_SERVER as $key => $value) {
-    if (is_string($value) && strpos($key, 'HTTP_') !== 0) {
-        putenv("{$key}={$value}");
+// 1. Sync environment variables to putenv (required for Laravel's env() helper)
+foreach ([$_ENV, $_SERVER] as $source) {
+    foreach ($source as $key => $value) {
+        if (is_string($value) && !in_array($key, ['PATH', 'USER', 'HOME'])) {
+            putenv("{$key}={$value}");
+        }
     }
 }
 
-// Force HTTPS for Vercel
-$_SERVER['HTTPS'] = 'on';
-
-// Temporary debug check for APP_KEY (only if APP_DEBUG is true)
-if (getenv('APP_DEBUG') === 'true' && !getenv('APP_KEY')) {
-    // This will help us confirm if the environment variable is actually missing from the runtime
-    error_log('Vercel Debug: APP_KEY is missing from getenv()');
+// 2. Debug Helper (Append ?debug_env=1 to your URL to see this)
+if (isset($_GET['debug_env'])) {
+    $hasKey = getenv('APP_KEY') ? 'FOUND' : 'MISSING';
+    $name = getenv('APP_NAME');
+    die("DEBUG INFO:<br>APP_KEY: $hasKey<br>APP_NAME: $name<br>PHP SAPI: " . php_sapi_name());
 }
+
+// 3. Force HTTPS for Vercel
+$_SERVER['HTTPS'] = 'on';
 
 // Ensure a writable directory for Laravel's cache/storage
 $tmpDir = '/tmp/laravel-cache';
