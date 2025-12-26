@@ -25,15 +25,6 @@ $app = Application::configure(basePath: dirname(__DIR__))
 // Override paths for Vercel
 if (env('VERCEL_JOB_ID') || env('VERCEL')) {
     $app->useStoragePath(env('CACHE_STORAGE_PATH', '/tmp/laravel-cache'));
-    $app->bootstrapWith([
-        \Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables::class,
-        \Illuminate\Foundation\Bootstrap\LoadConfiguration::class,
-        \Illuminate\Foundation\Bootstrap\HandleExceptions::class,
-        \Illuminate\Foundation\Bootstrap\RegisterFacades::class,
-        \Illuminate\Foundation\Bootstrap\SetRequestForConsole::class,
-        \Illuminate\Foundation\Bootstrap\RegisterProviders::class,
-        \Illuminate\Foundation\Bootstrap\BootProviders::class,
-    ]);
 }
 
 return $app;
